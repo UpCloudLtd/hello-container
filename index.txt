@@ -1,0 +1,6 @@
+Hello! 👋
+
+Hostname: nginx_hostname
+Address:  nginx_address
+
+UpCloudLtd / hello-container docker_version_note
