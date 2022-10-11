@@ -23,6 +23,6 @@ jobs:
         docker build . --tag hello-container
 
         for tag in ${{ github.run_number }} latest; do
-          docker tag hello-container ghcr.io/UpCloudLtd/hello:$tag
-          docker push ghcr.io/UpCloudLtd/hello:$tag
+          docker tag hello-container ghcr.io/upcloudltd/hello:$tag
+          docker push ghcr.io/upcloudltd/hello:$tag
         done
