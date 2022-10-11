@@ -6,21 +6,11 @@ on:
     - main
 
 jobs:
-  build-and-push:
+  validate-txt:
     name: Validate txt response
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Build container and check response
-      run: |
-        docker build . --tag hello-container --build-arg "VERSION_NOTE=at not-a-commit-sha"
-        container_id=$(docker run -d -p 8080:80 --hostname hello-test hello-container)
-
-        curl localhost:8080 -so out.txt
-
-        grep -q "^Hostname: hello-test$" out.txt
-        grep -q "^Hello! 👋$" out.txt
-        grep -q "^UpCloudLtd / hello-container at not-a-co$" out.txt
-
-        docker rm -f ${container_id}
+    - name: Build container and validate txt response
+      run: ./.ci/build-container-and-validate-txt-response.sh
