@@ -6,7 +6,7 @@ on:
     - main
 
 jobs:
-  run:
+  build-and-push:
     name: Build and push container image
     runs-on: ubuntu-latest
     steps:
