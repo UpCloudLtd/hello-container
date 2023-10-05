@@ -1,6 +1,11 @@
 # hello-container
 
-Simple container for testing and demonstrating container and pod networking.
+Simple container for testing and demonstrating
+
+- container and pod networking, and
+- (rolling) deployment updates.
+
+The container runs an nginx server that (from the `/` root route) returns either HTML or TXT response with `Hello! 👋` message as well as containers hostname and address.
 
 ## Usage
 
@@ -25,8 +30,14 @@ Build `hello-container` image with:
 ```sh
 docker build . -t hello-container
 
-# Or with version note
+# With version note
 docker build . -t hello-container --build-arg "VERSION_NOTE=at $(git rev-parse HEAD)"
+
+# With custom emoji and greeting
+docker build . -t hello-container \
+  --build-arg "VERSION_NOTE=at $(git rev-parse HEAD)" \
+  --build-arg "EMOJI=🐄" \
+  --build-arg "HELLO=Moo"
 ```
 
 Run `hello-container` with:

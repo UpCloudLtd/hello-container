@@ -1,0 +1,6 @@
+# Temporary test files
+out.txt
+
+# Build outputs
+hello-*.tar.gz
+out/

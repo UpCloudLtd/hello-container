@@ -1,6 +1,6 @@
-Hello! 👋
+build_hello! build_emoji
 
 Hostname: nginx_hostname
 Address:  nginx_address
 
-UpCloudLtd / hello-container docker_version_note
+UpCloudLtd / hello-container build_version_note
