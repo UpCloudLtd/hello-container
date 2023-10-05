@@ -2,13 +2,28 @@ name: Release
 
 on:
   push:
-    branches:
-    - main
+    tags:
+    - "v*"
 
 jobs:
   build-and-push:
-    name: Build and push container image
+    name: Build and push container image (${{ matrix.args.name }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        args:
+        - emoji: 👋
+          hello: Hello
+          name: hello
+        - emoji: 🐅
+          hello: Roar
+          name: tiger
+        - emoji: 🐕
+          hello: Woof
+          name: dog
+        - emoji: 🐄
+          hello: Moo
+          name: cow
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -20,9 +35,49 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and push container image to GitHub Container Registry
       run: |
-        docker build . --tag hello-container --build-arg "VERSION_NOTE=at ${GITHUB_SHA}"
+        docker build . --tag hello-container \
+          --build-arg "VERSION_NOTE=at ${{ github.ref_name }}" \
+          --build-arg "EMOJI=${{ matrix.args.emoji }}" \
+          --build-arg "HELLO=${{ matrix.args.hello }}"
 
-        for tag in ${{ github.run_number }} latest; do
+        tags="${{ matrix.args.name }}-${{ github.ref_name }} ${{ matrix.args.name }}"
+        if [ "${{ matrix.args.name }}" = "hello" ]; then
+            tags="$tags latest"
+        fi
+
+        for tag in $tags; do
           docker tag hello-container ghcr.io/upcloudltd/hello:$tag
           docker push ghcr.io/upcloudltd/hello:$tag
         done
+    - name: Build archive
+      run: bash -xe ./.ci/build-index-files.sh
+      env:
+        VERSION_NOTE: "at ${{ github.ref_name }}"
+        EMOJI: "${{ matrix.args.emoji }}"
+        HELLO: "${{ matrix.args.hello }}"
+        NAME: "${{ matrix.args.name }}"
+    - name: Stash archive
+      uses: actions/upload-artifact@v3
+      with:
+        name: hello-${{ matrix.args.name }}
+        path: hello-${{ matrix.args.name }}.tar.gz
+  upload-files-to-release:
+    name: Upload build results to release
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Unstash archive
+      uses: actions/download-artifact@v3
+      with:
+        path: release/
+    - name: Upload archive to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: release/*/hello-*.tar.gz
+        file_glob: true
+    - name: Upload nginx configuration to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: index.conf

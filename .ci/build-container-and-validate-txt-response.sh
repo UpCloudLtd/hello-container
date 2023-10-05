@@ -12,3 +12,10 @@ grep -q "^Hello! 👋$" out.txt
 grep -q "^UpCloudLtd / hello-container at not-a-co$" out.txt
 
 docker rm -f ${container_id}
+
+EMOJI=🦁 HELLO=Moo NAME=horse bash -xe ./.ci/build-index-files.sh
+
+grep -q "^Moo! 🦁$" out/index.txt
+grep -q "^UpCloudLtd / hello-container $" out/index.txt
+
+ls hello-horse.tar.gz
