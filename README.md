@@ -23,6 +23,11 @@ This process might take a few minutes. After external IP for hello service is vi
 $ curl http://lb-${id}.upcloudlb.com
 ```
 
+Environment variable `NGINX_PORT` can be used to change port that Nginx listens to.
+```sh
+$ docker run -e NGINX_PORT=8080 ghcr.io/upcloudltd/hello
+```
+
 ## Development
 
 Build `hello-container` image with:
