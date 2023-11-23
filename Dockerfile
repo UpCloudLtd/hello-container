@@ -13,6 +13,7 @@ RUN ./build-index-files.sh
 FROM nginx:stable-alpine
 
 RUN rm /etc/nginx/conf.d/*
-COPY index.conf /etc/nginx/conf.d/
+COPY index.conf /etc/nginx/templates/index.conf.template
 
 COPY --from=build /work/out/* /usr/share/nginx/html/
+ENV NGINX_PORT=80
